@@ -1,1 +1,37 @@
-
+#App {
+	height: 100vh;
+	font-size: 16px;
+}
+header {
+	min-height: 10vh;
+}
+footer {
+	min-height: 10vh;
+	padding: 10px 10px 10px 10px;
+	background: red;
+}
+main {
+	min-height: 80vh;
+	padding: 10px 10px 10px 10px;
+}
+h1 {
+	font-size: 40px;
+}
+h2 {
+	font-size: 34px;
+}
+h3 {
+	font-size: 28px;
+}
+h4 {
+	font-size: 22px;
+}
+p {
+	font-size: 16px;
+}
+span {
+	font-size: 14px;
+}
+input[type='checkbox'] {
+	box-shadow: none !important;
+}
