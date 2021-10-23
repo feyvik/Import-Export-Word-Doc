@@ -1,37 +1,34 @@
-import React from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPlus } from '@fortawesome/free-solid-svg-icons';
+import mammoth from 'mammoth';
 
 export default function Header() {
+	const getFile = (e) => {
+		console.log(e);
+		var reader = new FileReader();
+		reader.onloadend = function (event) {
+			var arrayBuffer = reader.result;
+			mammoth
+				.convertToHtml({ arrayBuffer: arrayBuffer })
+				.then(function (resultObject) {
+					localStorage.setItem('doc', resultObject.value);
+					console.log(resultObject);
+				});
+		};
+		reader.readAsArrayBuffer(e);
+	};
+
 	return (
 		<header>
-			<nav className='navbar navbar-expand-lg navbar-light bg-light px-4'>
-				<a className='navbar-brand' href='#home'>
-					Navbar
-				</a>
-				<button
-					className='navbar-toggler'
-					type='button'
-					data-toggle='collapse'
-					data-target='#navbarSupportedContent'
-					aria-controls='navbarSupportedContent'
-					aria-expanded='false'
-					aria-label='Toggle navigation'
-				>
-					<span className='navbar-toggler-icon'></span>
-				</button>
+			<nav className='row m-0 py-2'>
+				<div className='mx-2 file'>
+					<input type='file' onChange={(e) => getFile(e.target.files[0])} />
+					<FontAwesomeIcon icon={faPlus} className='fa-fw' />
+					<label>Import </label>
+				</div>
 
-				<div className='collapse navbar-collapse' id='navbarSupportedContent'>
-					<ul className='navbar-nav mr-auto'>
-						<li className='nav-item active'>
-							<a className='nav-link' href='#home'>
-								Home
-							</a>
-						</li>
-						<li className='nav-item'>
-							<a className='nav-link' href='#home'>
-								Link
-							</a>
-						</li>
-					</ul>
+				<div className='mx-2 file text-right'>
+					<button>Export</button>
 				</div>
 			</nav>
 		</header>
