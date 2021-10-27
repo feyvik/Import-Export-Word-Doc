@@ -1,14 +1,11 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 export default function MainContent(props) {
-	// const [doc, setDoc] = useState();
+	let word = props.doc;
+
 	const showoutput = (e) => {
-		console.log(e.target.value);
+		localStorage.setItem('word', e.target.innerHTML);
 	};
-
-	const word = props.doc;
-
-	console.log(word);
 
 	return (
 		<main>
@@ -18,7 +15,7 @@ export default function MainContent(props) {
 						dangerouslySetInnerHTML={{ __html: word === '' ? '' : word }}
 						contentEditable='true'
 						className='editor-view'
-						onChange={(e) => showoutput(e)}
+						onInput={(e) => showoutput(e)}
 					></div>
 				</div>
 			</div>

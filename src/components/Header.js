@@ -11,14 +11,16 @@ import {
 	faAlignRight,
 	faAlignLeft,
 	faUnderline,
-	faPlus,
 	faImage,
+	faLink,
 } from '@fortawesome/free-solid-svg-icons';
 import mammoth from 'mammoth';
 import MainContent from './MainContent';
 
-const exportHtmlToDoc = async (htmlString) => {
-	const fileBuffer = await HTMLtoDOCX(htmlString, null, {
+const exportHtmlToDoc = async () => {
+	const filename = document.querySelector('#filename-input');
+	const word = localStorage.getItem('word');
+	const fileBuffer = await HTMLtoDOCX(word, null, {
 		table: { row: { cantSplit: true } },
 		footer: true,
 		pageNumber: true,
@@ -27,7 +29,7 @@ const exportHtmlToDoc = async (htmlString) => {
 	const downloadUrl = URL.createObjectURL(fileBuffer);
 	const link = document.createElement('a');
 	link.href = downloadUrl;
-	link.download = 'new_word_document.docx';
+	link.download = filename.value + '.docx';
 	link.target = '_blank';
 	document.body.appendChild(link);
 	link.click();
@@ -45,38 +47,35 @@ export default function Header() {
 				};
 			});
 		}),
-		styleMap: ['table => table.bordered', 'img => img.show'],
+		styleMap: ['table => table.bordered', 'a => a.show'],
 	};
 
 	const getFile = (e) => {
-		console.log(e);
-		var reader = new FileReader();
-		reader.onloadend = function (event) {
-			var arrayBuffer = reader.result;
-			mammoth
-				.convertToHtml({ arrayBuffer: arrayBuffer }, mammothOptions)
-				.then(function (resultObject) {
-					setDoc(resultObject.value);
-				});
-		};
-		reader.readAsArrayBuffer(e);
+		var ret = '';
+		localStorage.clear();
+		if (e) {
+			var reader = new FileReader();
+			reader.onloadend = function (event) {
+				var arrayBuffer = reader.result;
+				mammoth
+					.convertToHtml({ arrayBuffer: arrayBuffer }, mammothOptions)
+					.then(function (resultObject) {
+						setDoc(resultObject.value);
+					});
+			};
+
+			reader.readAsArrayBuffer(e);
+		}
+		return ret;
 	};
-	const convet = (e) => {
-		console.log(e);
-		const reader = new FileReader();
-		reader.onload = (e) => {
-			const image = new Image();
-			image.src = e.target.result;
-			console.log(image.src);
-		};
-		reader.onerror = function (error) {
-			console.log('Error: ', error);
-		};
-		reader.readAsDataURL(e);
+
+	const convet = () => {
+		var linkURL = prompt('Enter a URL:', 'http://');
+		console.log(linkURL);
+		document.execCommand('insertImage', false, linkURL);
 	};
 
 	const format = (command, value) => {
-		console.log(command, value);
 		document.execCommand(command, false, value);
 	};
 
@@ -91,23 +90,51 @@ export default function Header() {
 	};
 	const chooseColor = () => {
 		const size = document.getElementById('myColor').value;
-		document.execCommand('color', false, size);
+		document.execCommand('backColor', false, size);
 	};
+	const createLink = () => {
+		var linkURL = prompt('Enter a URL:', 'http://');
+		console.log(linkURL);
+		document.execCommand(
+			'createLink',
+			false,
+			`<a href="${linkURL}" target="_blank" ></>`
+		);
+	};
+
 	return (
 		<div>
 			<header>
-				<nav className='text-center m-0 py-4 border'>
-					<span className='mx-2 file'>
-						<input type='file' onChange={(e) => getFile(e.target.files[0])} />
-						<FontAwesomeIcon icon={faPlus} className='fa-fw' />
-						<label>Import</label>
-					</span>
-					<span className='mx-2 file'>
-						<button onClick={() => exportHtmlToDoc(doc)}>
-							<FontAwesomeIcon icon={faPlus} className='fa-fw' />
-							Export
+				<nav className='text-center m-0 py-4 border '>
+					<span className='mx-2 file'></span>
+
+					<span className='dropdown mx-2'>
+						<button
+							className='btn btn-primary dropdown-toggle'
+							data-bs-toggle='dropdown'
+						>
+							File
 						</button>
+						<div className='dropdown-menu'>
+							<div className='mx-2'>
+								<input
+									type='file'
+									onChange={(e) => getFile(e.target.files[0])}
+								/>
+								<label>Import</label>
+							</div>
+							<button onClick={() => exportHtmlToDoc()} className='mt-2'>
+								Save as Dox
+							</button>
+						</div>
 					</span>
+
+					<input id='filename-input' type='text' />
+
+					<button type='button' className='mx-2' onClick={() => convet()}>
+						<FontAwesomeIcon icon={faImage} className='fa-fw' />
+					</button>
+
 					<button className='mx-2' onClick={(e) => format('bold')}>
 						<FontAwesomeIcon icon={faBold} className='fa-fw' />
 					</button>
@@ -138,6 +165,15 @@ export default function Header() {
 					</button>
 					<button className='mx-2' onClick={() => format('underline')}>
 						<FontAwesomeIcon icon={faUnderline} className='fa-fw' />
+					</button>
+
+					<button
+						className='color-apply mx-2'
+						type='button'
+						onClick={() => createLink()}
+						id='link'
+					>
+						<FontAwesomeIcon icon={faLink} className='fa-fw' />
 					</button>
 					<input
 						className='color-apply mx-2'
@@ -183,13 +219,9 @@ export default function Header() {
 						<option value='14'>14</option>
 						<option value='15'>15</option>
 					</select>
-					<span className='mx-2 file'>
-						<input type='file' onChange={(e) => convet(e.target.files[0])} />
-						<FontAwesomeIcon icon={faImage} className='fa-fw' />
-						<label>Image</label>
-					</span>
 				</nav>
 			</header>
+
 			<MainContent doc={doc} />
 		</div>
 	);
