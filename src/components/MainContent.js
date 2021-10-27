@@ -1,35 +1,25 @@
-import { convertFromRaw, convertToRaw, EditorState } from 'draft-js';
-import React, { useState, useEffect } from 'react';
-import { Editor } from 'react-draft-wysiwyg';
-import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
+import React, { useState } from 'react';
 
-export default function MainContent() {
-	const [editorState, setEditorState] = useState(EditorState.createEmpty());
-
-	const onEditorStateChange = (editorState) => {
-		setEditorState(editorState);
-		let word = convertToRaw(editorState.getCurrentContent());
-		localStorage.setItem('doc', word.blocks[0].text);
+export default function MainContent(props) {
+	// const [doc, setDoc] = useState();
+	const showoutput = (e) => {
+		console.log(e.target.value);
 	};
 
-	useEffect(() => {
-		if (localStorage.getItem('doc') !== '') {
-			let word = localStorage.getItem('doc');
-			console.log(word);
-			setEditorState({ editorState: word });
-		}
-	}, []);
+	const word = props.doc;
+
+	console.log(word);
 
 	return (
 		<main>
 			<div className='row m-0 p-0'>
-				<div className='col-12 editor'>
-					<Editor
-						editorState={editorState}
-						onEditorStateChange={onEditorStateChange}
-						toolbarClassName='sticky-top'
-						editorClassName='bg-white mt-4 editor-view'
-					/>
+				<div className='col-12 mt-4'>
+					<div
+						dangerouslySetInnerHTML={{ __html: word === '' ? '' : word }}
+						contentEditable='true'
+						className='editor-view'
+						onChange={(e) => showoutput(e)}
+					></div>
 				</div>
 			</div>
 		</main>

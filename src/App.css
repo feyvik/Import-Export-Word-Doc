@@ -1,5 +1,5 @@
 .App {
-	height: 100vh;
+	min-height: 100vh;
 	font-size: 16px;
 	background-color: rgb(243, 243, 243);
 }
@@ -29,15 +29,32 @@ input[type='file'] {
 	width: 5%;
 	position: absolute;
 }
-.editor {
-	min-height: 80vh;
-	outline: none !important;
-}
 .editor-view {
 	min-height: 70vh;
 	border-radius: 8px;
 	box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.06), 0 1px 0 0 rgba(0, 0, 0, 0.02);
 	padding: 40px 60px;
-	width: 80%;
+	width: 85%;
 	margin: auto;
+	background: rgb(255, 255, 255);
+	overflow-y: scroll;
+	outline: none !important;
+}
+p.Heading1 {
+	color: red !important;
+}
+table.bordered,
+table.bordered th,
+table.bordered tr,
+table.bordered td {
+	border: 1px solid #3d3d3d;
+}
+table.bordered th {
+	padding: 0.5em;
+}
+table.bordered {
+	border-collapse: collapse;
+}
+img.show {
+	width: 100%;
 }
