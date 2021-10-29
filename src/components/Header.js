@@ -17,27 +17,35 @@ import {
 import mammoth from 'mammoth';
 import MainContent from './MainContent';
 
-const exportHtmlToDoc = async () => {
-	const filename = document.querySelector('#filename-input');
-	const word = localStorage.getItem('word');
-	const fileBuffer = await HTMLtoDOCX(word, null, {
-		table: { row: { cantSplit: true } },
-		footer: true,
-		pageNumber: true,
-	});
-
-	const downloadUrl = URL.createObjectURL(fileBuffer);
-	const link = document.createElement('a');
-	link.href = downloadUrl;
-	link.download = filename.value + '.docx';
-	link.target = '_blank';
-	document.body.appendChild(link);
-	link.click();
-	link.remove();
-};
-
 export default function Header() {
 	const [doc, setDoc] = useState();
+
+	const exportHtmlToDoc = async () => {
+		const filename = document.querySelector('#filename-input');
+		const word = localStorage.getItem('word');
+		// const fileBuffer = await HTMLtoDOCX(word, null, {
+		// 	table: { row: { cantSplit: true } },
+		// 	footer: true,
+		// 	pageNumber: true,
+		// });
+
+		const a = document.createElement('a');
+		const blob = new Blob([doc]);
+		const dataUrl = URL.createObjectURL(blob);
+		a.href = dataUrl;
+		a.download = filename.value + '.docx';
+		a.click();
+
+		// const downloadUrl = URL.createObjectURL(word);
+		// const link = document.createElement('a');
+		// link.href = downloadUrl;
+		// link.download = filename.value + '.docx';
+		// link.target = '_blank';
+		// document.body.appendChild(link);
+		// link.click();
+		// link.remove();
+	};
+
 	const mammothOptions = {
 		convertImage: mammoth.images.imgElement(function (image) {
 			return image.read('base64').then(function (imageBuffer) {
@@ -52,7 +60,6 @@ export default function Header() {
 
 	const getFile = (e) => {
 		var ret = '';
-		localStorage.clear();
 		if (e) {
 			var reader = new FileReader();
 			reader.onloadend = function (event) {

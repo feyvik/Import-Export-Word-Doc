@@ -4,7 +4,7 @@ export default function MainContent(props) {
 	let word = props.doc;
 
 	const showoutput = (e) => {
-		localStorage.setItem('word', e.target.innerHTML);
+		console.log(e);
 	};
 
 	return (
@@ -15,7 +15,7 @@ export default function MainContent(props) {
 						dangerouslySetInnerHTML={{ __html: word === '' ? '' : word }}
 						contentEditable='true'
 						className='editor-view'
-						onInput={(e) => showoutput(e)}
+						onInput={() => showoutput(word)}
 					></div>
 				</div>
 			</div>
