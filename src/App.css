@@ -60,11 +60,12 @@ button {
 	background: none;
 	border: none;
 }
-
 img {
+	width: 200px;
+}
+.showText {
 	width: 100%;
 }
-
 a {
 	cursor: pointer;
 	text-decoration: none;

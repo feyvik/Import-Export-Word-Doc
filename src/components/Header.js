@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import HTMLtoDOCX from 'html-to-docx';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
 	faBold,
@@ -20,42 +19,29 @@ import MainContent from './MainContent';
 export default function Header() {
 	const [doc, setDoc] = useState();
 
-	const exportHtmlToDoc = async () => {
-		const filename = document.querySelector('#filename-input');
-		const word = localStorage.getItem('word');
-		// const fileBuffer = await HTMLtoDOCX(word, null, {
-		// 	table: { row: { cantSplit: true } },
-		// 	footer: true,
-		// 	pageNumber: true,
-		// });
+	const exportHtmlToDoc = async (element, filename = '') => {
+		const word = localStorage.getItem('doc');
+		var header =
+			"<html xmlns:o='urn:schemas-microsoft-com:office:office' " +
+			"xmlns:w='urn:schemas-microsoft-com:office:word' " +
+			"xmlns='http://www.w3.org/TR/REC-html40'>" +
+			"<head><meta charset='utf-8'><title>Export HTML to Word Document with JavaScript</title></head><body>";
+		var footer = '</body></html>';
+		var sourceHTML = header + word + footer;
 
-		const a = document.createElement('a');
-		const blob = new Blob([doc]);
-		const dataUrl = URL.createObjectURL(blob);
-		a.href = dataUrl;
-		a.download = filename.value + '.docx';
-		a.click();
-
-		// const downloadUrl = URL.createObjectURL(word);
-		// const link = document.createElement('a');
-		// link.href = downloadUrl;
-		// link.download = filename.value + '.docx';
-		// link.target = '_blank';
-		// document.body.appendChild(link);
-		// link.click();
-		// link.remove();
+		var source =
+			'data:application/vnd.ms-word;charset=utf-8,' +
+			encodeURIComponent(sourceHTML);
+		var fileDownload = document.createElement('a');
+		document.body.appendChild(fileDownload);
+		fileDownload.href = source;
+		fileDownload.download = 'document.doc';
+		fileDownload.click();
+		document.body.removeChild(fileDownload);
 	};
 
 	const mammothOptions = {
-		convertImage: mammoth.images.imgElement(function (image) {
-			return image.read('base64').then(function (imageBuffer) {
-				return {
-					src: 'data:' + image.contentType + ';base64,' + imageBuffer,
-					style: 'width: 100%',
-				};
-			});
-		}),
-		styleMap: ['table => table.bordered', 'a => a.show'],
+		styleMap: ['table => table.bordered'],
 	};
 
 	const getFile = (e) => {
@@ -230,6 +216,7 @@ export default function Header() {
 			</header>
 
 			<MainContent doc={doc} />
+			{/* <div className='showText'>{use && use.words}</div> */}
 		</div>
 	);
 }
