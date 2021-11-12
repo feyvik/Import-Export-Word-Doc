@@ -70,3 +70,6 @@ a {
 	cursor: pointer;
 	text-decoration: none;
 }
+p {
+	line-height: 2em;
+}

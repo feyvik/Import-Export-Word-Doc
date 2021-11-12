@@ -19,7 +19,8 @@ import MainContent from './MainContent';
 export default function Header() {
 	const [doc, setDoc] = useState();
 
-	const exportHtmlToDoc = async (element, filename = '') => {
+	const exportHtmlToDoc = async () => {
+		let filename = document.querySelector('#filename-input').value;
 		const word = localStorage.getItem('doc');
 		var header =
 			"<html xmlns:o='urn:schemas-microsoft-com:office:office' " +
@@ -29,19 +30,41 @@ export default function Header() {
 		var footer = '</body></html>';
 		var sourceHTML = header + word + footer;
 
-		var source =
+		var blob = new Blob(['\ufeff', sourceHTML], {
+			type: 'application/msword',
+		});
+
+		// Specify link url
+		var url =
 			'data:application/vnd.ms-word;charset=utf-8,' +
 			encodeURIComponent(sourceHTML);
-		var fileDownload = document.createElement('a');
-		document.body.appendChild(fileDownload);
-		fileDownload.href = source;
-		fileDownload.download = 'document.doc';
-		fileDownload.click();
-		document.body.removeChild(fileDownload);
+
+		// Specify file name
+		filename = filename ? filename + '.doc' : 'document.doc';
+
+		// Create download link element
+		var downloadLink = document.createElement('a');
+
+		document.body.appendChild(downloadLink);
+
+		if (navigator.msSaveOrOpenBlob) {
+			navigator.msSaveOrOpenBlob(blob, filename);
+		} else {
+			// Create a link to the file
+			downloadLink.href = url;
+
+			// Setting the file name
+			downloadLink.download = filename;
+
+			//triggering the function
+			downloadLink.click();
+		}
+
+		document.body.removeChild(downloadLink);
 	};
 
 	const mammothOptions = {
-		styleMap: ['table => table.bordered'],
+		styleMap: ['table => table.bordered', 'a => a.show', 'img => img.width'],
 	};
 
 	const getFile = (e) => {
