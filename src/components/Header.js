@@ -40,7 +40,7 @@ export default function Header() {
 			encodeURIComponent(sourceHTML);
 
 		// Specify file name
-		filename = filename ? filename + '.doc' : 'document.doc';
+		filename = filename ? filename + '.docx' : 'document.docx';
 
 		// Create download link element
 		var downloadLink = document.createElement('a');
